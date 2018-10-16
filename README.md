@@ -2,7 +2,7 @@
 Provide a platform for wardrobe sharing between friends and strangers, you get benefits by being a better user of the platform.
 
 Stack:
-Vue.js & Node.js & MySQL
+Vue.js, Node.js & MySQL
 
 Members:
 - Amir Hossein Bakhtiary Davijani
