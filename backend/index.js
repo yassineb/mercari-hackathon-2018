@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3001
+const port = 3000
 const db = require('./db.js').knex
 const distance = require('./distance.js').distance
 
