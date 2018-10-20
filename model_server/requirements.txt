@@ -4,3 +4,4 @@ pandas
 tensorflow
 pillow
 jupyter
+google_images_download

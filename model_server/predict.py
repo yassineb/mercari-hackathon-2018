@@ -16,7 +16,7 @@ def make_inference(graph, model, img_path):
     with graph.as_default():
         preds = model.predict(x)
     
-    print('Predicted:', decode_predictions(preds, top=3)[0])
+    return decode_predictions(preds, top=3)
 
 if __name__ == "__main__": 
     model = get_resNet50_model()
