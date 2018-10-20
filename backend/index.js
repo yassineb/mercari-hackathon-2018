@@ -4,6 +4,10 @@ const port = 3000
 const db = require('./db.js')
 const knex = db.knex
 
+var bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Methods", "*")
@@ -36,6 +40,11 @@ app.get('/items/:id', async (req, res) => {
             }
         })
     res.json(items)
+})
+
+app.post('/items', function (req, res){
+  console.log(req.body);
+  res.json("ok")
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
