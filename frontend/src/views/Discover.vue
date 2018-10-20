@@ -1,7 +1,14 @@
 <template>
 	<div class="discover">
+		<div class="search-filters">
+			<gmap-autocomplete
+				class="input search-filter"
+				@place_changed="updateLocation">
+			</gmap-autocomplete>
+			<b-input class="search-filter" v-model="search" placeholder="Search"></b-input>
+		</div>
 		<div class="products-container">
-			<div class="card product" v-for="product in products">
+			<div class="card product" v-for="product in filteredProducts" @click="openItem(product.id)">
 				<div class="card-image">
 					<figure class="image">
 						<img :src="product.image">
@@ -9,7 +16,7 @@
 				</div>
 				<div class="card-content">
 					<div class="content">
-						{{product.name}}
+						{{product.title}}
 					</div>
 				</div>
 				<footer class="card-footer">
@@ -18,7 +25,7 @@
 						icon="map-marker-distance"
 						size="is-small">
 					</b-icon>
-					<span>10km</span>
+					<span>{{product.distance}}</span>
 				</footer>
 			</div>
 		</div>
@@ -26,19 +33,44 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "@/api";
 
 export default {
   name: "Discover",
 	data() {
 		return {
-			products: []
+			products: [],
+			search: null,
 		}
 	},
-  async mounted() {
-		let response = await axios.get("http://localhost:3000/items")
-		this.products = response.data
-  }
+  mounted() {
+		this.updateItems()
+  },
+	computed: {
+		filteredProducts() {
+			if (!this.search) return this.products
+			return this.products.filter(product => {
+				return product.title.toLowerCase()
+									.includes(this.search.toLowerCase())
+			})
+		}	
+	},
+	methods: {
+		openItem(itemId) {
+			this.$router.push({name: 'itemDetail', params: {itemId}})
+		},
+		updateLocation(location) {
+			let coordinates = {
+				latitude: location.geometry.location.lat(),
+				longitude: location.geometry.location.lng()
+			}
+			this.updateItems(coordinates)
+		},
+		async updateItems(location) {
+			let response = await api.get('/items', {params: location})
+			this.products = response.data
+		}
+	}
 };
 </script>
 
@@ -61,5 +93,13 @@ export default {
 }
 .distance-icon {
 	margin: 0 10px;
+}
+.search-filter {
+	width: 300px;
+}
+.search-filters {
+	margin: 50px;
+	display:flex;
+	justify-content: space-around;
 }
 </style>

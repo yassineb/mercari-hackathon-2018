@@ -6,6 +6,14 @@ import "./registerServiceWorker"
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 import '@mdi/font/css/materialdesignicons.css'
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+Vue.use(VueGoogleMaps, {
+	load: {
+		key: 'AIzaSyAlu17PuCOggAb8q65PiJ2RhOkIwEzUxto',
+		libraries: 'places',
+	}
+})
 
 Vue.use(Buefy)
 
