@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const db = require('./db.js')
+const knex = db.knex
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
@@ -11,7 +12,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/items', async (req, res) => {
-  let items = await db.knex.select().from('items').map(function(item) {
+  let items = await knex.select().from('items').map(function(item) {
     return {
         'id': item.id,
         'title': item.title,
@@ -20,6 +21,21 @@ app.get('/items', async (req, res) => {
   });
 
   res.json(items)
+})
+
+app.get('/items/:id', async (req, res) => {
+    let items = await knex.select().from('items').where({id: req.params.id})
+        .first()
+        .then(function (item) {
+            return {
+                'id': item.id,
+                'title': item.title,
+                'images': [item.image, item.image, item.image],
+                'owner': 'Yassine',
+                'reviews': [{'comment': 'This was a warm jacket', "rating": true}]
+            }
+        })
+    res.json(items)
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
