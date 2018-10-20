@@ -12,6 +12,14 @@
 						{{product.name}}
 					</div>
 				</div>
+				<footer class="card-footer">
+					<b-icon
+						class="distance-icon"
+						icon="map-marker-distance"
+						size="is-small">
+					</b-icon>
+					<span>10km</span>
+				</footer>
 			</div>
 		</div>
 	</div>
@@ -42,5 +50,16 @@ export default {
 }
 .product {
 	margin: 10px;
+}
+.card-content {
+	padding: 10px;
+}
+.card-footer {
+	padding: 5px;
+	display: flex;
+	align-items: center;
+}
+.distance-icon {
+	margin: 0 10px;
 }
 </style>
