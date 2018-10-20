@@ -12,9 +12,10 @@
 
         <div class="add-item_form container">
           <b-field clas="add-item_form_images">
-            <b-upload v-model="itemData.images"
+            <b-upload v-model="images"
               multiple
-              drag-drop>
+              drag-drop
+              @input="imageUploaded">
               <section class="section">
                 <div class="content has-text-centered">
                   <p>
@@ -52,7 +53,6 @@
             <div class="control">
               <div class="select">
                 <select class="add-item_form_category_selector input" v-model="itemData.category">
-                  <option disabled>Please select one</option>
                   <option value="" v-for="category in categories">{{category}}</option>
                 </select>
               </div>
@@ -60,18 +60,29 @@
           </div>
           <div class="add-item_form_brand field">
             <div class="add-item_form_brand_label label">
-              Select item brand :
+              Item brand :
             </div>
             <div class="control">
               <input class="input" type="text" v-model="itemData.brand" placeholder="Brand of the item">
             </div>
           </div>
-          <div class="add-item_action field is-grouped">
-            <div class="add-item_action_save control">
-              <button type="button" class="button is-primary" name="button">Save</button>
+          <div class="add-item_form_color field">
+            <div class="add-item_form_brand_color label">
+              Item color :
             </div>
             <div class="control">
-              <button type="button" class="button is-text" name="button">Reset</button>
+              <input class="input" type="text" v-model="itemData.color" placeholder="Color of the item">
+            </div>
+          </div>
+          <div class="add-item_action field is-grouped">
+            <div class="add-item_action_save control">
+              <button
+              type="button"
+              class="button is-primary"
+              @click="addItem()">Save</button>
+            </div>
+            <div class="control">
+              <button type="button" class="button is-text" name="button" @click="reset">Reset</button>
             </div>
           </div>
         </div>
@@ -81,6 +92,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import cloudinary from "cloudinary-core";
+
 export default {
   name: "AddItem",
   data() {
@@ -93,6 +107,7 @@ export default {
         brand: null,
         color: null
       },
+      images: [],
       categories: []
     }
   },
@@ -115,6 +130,47 @@ export default {
         "Clothing Accessory",
         "Shoes"
       ]
+    },
+    addItem: function() {
+      console.log('add item function called')
+      console.log(this.itemData)
+      this.itemData['userId'] = 1;
+      axios.post("http://172.16.230.84:3000/items", this.itemData)
+        .then((response) => {
+          console.log("success")
+          this.reset()
+        })
+    },
+    reset: function() {
+      this.itemData= {
+        images: [],
+        title: null,
+        description: null,
+        category: null,
+        brand: null,
+        color: null
+      }
+      this.images = [];
+    },
+    imageUploaded: function () {
+      for(var i = 0; i < this.images.length; i++) {
+        this.uploadImageCloudinary(this.images[0])
+      }
+    },
+    uploadImageCloudinary: function (file) {
+      console.log('upload image cloudinary called')
+      var url = 'https://api.cloudinary.com/v1_1/' + 'yassineb' + '/upload'
+
+      var formData = new FormData()
+      formData.append('file', file)
+      formData.append('upload_preset', 'qmbgf2vz')
+      axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((response) => {
+        this.itemData.images.push(response.data.url)
+      })
     }
   }
 };
