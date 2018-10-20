@@ -21,6 +21,8 @@ app.get('/items', async (req, res) => {
     let items = await db.select('items.*', 'users.name AS owner_name')
         .from('items')
         .leftJoin('users', 'users.id', '=', 'items.owner_id')
+        .leftJoin('bookings', 'bookings.item_id', '=', 'items.id')
+        .whereRaw('bookings.id is null')
         .map(function(item) {
         return {
             'id': item.id,
