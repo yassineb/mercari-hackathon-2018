@@ -18,7 +18,7 @@ app.get('/items', async (req, res) => {
   let products = response.data
     .map(name => ({
       name,
-      image: "https://picsum.photos/200/300"
+      image: "https://picsum.photos/200?random&"+name
     }));
   res.json(products)
 })
