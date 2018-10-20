@@ -52,8 +52,8 @@
               </textarea>
             </div>
           </div>
-          <div class="add-item_form_category">
-            <div class="add-item_form_category_label">
+          <div class="add-item_form_category field">
+            <div class="add-item_form_category_label label">
               Select item category :
             </div>
             <div class="control">
@@ -125,7 +125,8 @@ export default {
         color: null
       },
       images: [],
-      categories: []
+      categories: [],
+      coordinates: null
     }
   },
   mounted() {
@@ -152,8 +153,8 @@ export default {
       console.log('add item function called')
       this.itemData['userId'] = 1;
       if (this.coordinates !== null) {
-        this.itemData['lat'] = this.coordinates.latitude
-        this.itemData['long'] = this.coordinates.longitude
+        this.itemData['latitude'] = this.coordinates.latitude
+        this.itemData['longitude'] = this.coordinates.longitude
       }
       console.log(this.itemData)
       axios.post("http://172.16.230.84:3000/items", this.itemData)
@@ -171,7 +172,8 @@ export default {
         brand: null,
         color: null
       }
-      this.images = [];
+      this.images = []
+      this.coordinates = []
     },
     imageUploaded: function () {
       for(var i = 0; i < this.images.length; i++) {
