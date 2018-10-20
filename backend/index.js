@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 const db = require('./db.js').knex
 const distance = require('./distance.js').distance
 
@@ -14,7 +14,6 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
   next()
 })
-
 
 app.get('/items', async (req, res) => {
     var userLocation = {latitude: req.query.latitude, longitude: req.query.longitude}
@@ -79,6 +78,26 @@ app.post('/items', async (req, res) => {
         owner_id: 1
     })
     res.json("ok")
+})
+
+app.post('/bookings', async (req, res) => {
+    body = req.body
+    booking = await db.select().from('bookings').where({item_id: body.item_id})
+        .andWhere('start', '<=', body.start)
+        .andWhere('end', '>=', body.end)
+
+    if (booking.length > 0) {
+        console.log("true")
+        throw new Error("Booking exists")
+    }
+
+    await db('bookings').insert({
+        item_id: body.item_id,
+        start: body.start,
+        end: body.end,
+        creation_time: new Date()
+    })
+    res.json({})
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
