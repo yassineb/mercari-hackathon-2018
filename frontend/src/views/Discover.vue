@@ -50,20 +50,21 @@
 </template>
 
 <script>
-import api from "@/api";
+import api from "@/api"
+import { mapState, mapActions } from "vuex"
 
 export default {
   name: "Discover",
 	data() {
 		return {
-			items: [],
 			search: "",
 		}
 	},
   mounted() {
-		this.updateItems()
+		this.refreshItems()
   },
 	computed: {
+		...mapState(['items']),
 		filteredItems() {
 			return this.items.filter(item => {
 					return item.title.toLowerCase()
@@ -96,6 +97,7 @@ export default {
 		}
 	},
 	methods: {
+		...mapActions(['refreshItems']),
 		openItem(itemId) {
 			this.$router.push({name: 'itemDetail', params: {itemId}})
 		},
@@ -104,11 +106,7 @@ export default {
 				latitude: location.geometry.location.lat(),
 				longitude: location.geometry.location.lng()
 			}
-			this.updateItems(coordinates)
-		},
-		async updateItems(location) {
-			let response = await api.get('/items', {params: location})
-			this.items = response.data
+			this.refreshItems(coordinates)
 		}
 	}
 };
