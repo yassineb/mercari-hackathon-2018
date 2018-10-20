@@ -59,8 +59,7 @@ app.post('/items', async (req, res) => {
     brand = body.brand
     description = body.description
 
-    await db.knex('items').insert({title, image: image, size, category, color, brand, description
-    })
+    await db.knex('items').insert({title, image: image, size, category, color, brand, description, owner_id: 1})
     res.json("ok")
 })
 
