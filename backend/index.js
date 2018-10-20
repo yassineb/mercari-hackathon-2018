@@ -16,11 +16,15 @@ app.use((req, res, next) => {
 })
 
 app.get('/items', async (req, res) => {
-  let items = await knex.select().from('items').map(function(item) {
+  let items = await knex.select('items.*', 'users.name AS owner_name')
+      .from('items')
+      .leftJoin('users', 'users.id', '=', 'items.owner_id')
+      .map(function(item) {
     return {
         'id': item.id,
         'title': item.title,
-        'image': item.image
+        'image': item.image,
+        'owner': item.owner_name
     }
   });
 
@@ -28,14 +32,17 @@ app.get('/items', async (req, res) => {
 })
 
 app.get('/items/:id', async (req, res) => {
-    let items = await knex.select().from('items').where({id: req.params.id})
+    let items = await knex.select('items.*', 'users.name AS owner_name')
+        .from('items')
+        .leftJoin('users', 'users.id', '=', 'items.owner_id')
+        .where({"users.id": req.params.id})
         .first()
         .then(function (item) {
             return {
                 'id': item.id,
                 'title': item.title,
                 'images': [item.image, item.image, item.image],
-                'owner': 'Yassine',
+                'owner': item.owner_name,
                 'reviews': [{'comment': 'This was a warm jacket', "rating": true}]
             }
         })
@@ -45,7 +52,7 @@ app.get('/items/:id', async (req, res) => {
 app.post('/items', async (req, res) => {
   title = req.body.title
   images = req.body.images
-  
+
   console.log(title, images)
   await db.knex('items').insert({title, image: images[0]})
   res.json("ok")
