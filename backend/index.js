@@ -3,6 +3,10 @@ const app = express()
 const port = 3000
 const db = require('./db.js')
 
+var bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
   res.header("Access-Control-Allow-Methods", "*")
@@ -22,4 +26,9 @@ app.get('/items', async (req, res) => {
   res.json(items)
 })
 
-app.listen(port, () => console.log(`App listening on port ${port}!`))
+app.post('/items', function (req, res){
+  console.log(req.body);
+  res.json("ok")
+})
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
