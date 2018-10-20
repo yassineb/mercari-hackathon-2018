@@ -66,6 +66,17 @@
               <input class="input" type="text" v-model="itemData.brand" placeholder="Brand of the item">
             </div>
           </div>
+          <div class="add-item_form_location field">
+            <div class="add-item_form_location_label label">
+              Pickup location :
+            </div>
+            <div class="control">
+              <gmap-autocomplete
+                class="input search-filter"
+                @place_changed="updateLocation">
+              </gmap-autocomplete>
+            </div>
+          </div>
           <div class="add-item_form_color field">
             <div class="add-item_form_brand_color label">
               Item color :
@@ -133,8 +144,12 @@ export default {
     },
     addItem: function() {
       console.log('add item function called')
-      console.log(this.itemData)
       this.itemData['userId'] = 1;
+      if (this.coordinates !== null) {
+        this.itemData['lat'] = this.coordinates.latitude
+        this.itemData['long'] = this.coordinates.longitude
+      }
+      console.log(this.itemData)
       axios.post("http://172.16.230.84:3000/items", this.itemData)
         .then((response) => {
           console.log("success")
@@ -157,6 +172,12 @@ export default {
         this.uploadImageCloudinary(this.images[0])
       }
     },
+    updateLocation(location) {
+			this.coordinates = {
+				latitude: location.geometry.location.lat(),
+				longitude: location.geometry.location.lng()
+			}
+		},
     uploadImageCloudinary: function (file) {
       console.log('upload image cloudinary called')
       var url = 'https://api.cloudinary.com/v1_1/' + 'yassineb' + '/upload'
