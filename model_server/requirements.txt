@@ -2,3 +2,5 @@ Flask
 keras
 pandas
 tensorflow
+pillow
+jupyter
