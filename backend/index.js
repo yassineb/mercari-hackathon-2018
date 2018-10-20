@@ -35,7 +35,7 @@ app.get('/items/:id', async (req, res) => {
     let items = await knex.select('items.*', 'users.name AS owner_name')
         .from('items')
         .leftJoin('users', 'users.id', '=', 'items.owner_id')
-        .where({"users.id": req.params.id})
+        .where({"items.id": req.params.id})
         .first()
         .then(function (item) {
             return {
