@@ -1,8 +1,15 @@
+require('dotenv').config()
 const express = require('express')
+const mqtt = require('mqtt')
 const app = express()
 const port = 3000
 const db = require('./db.js').knex
 const distance = require('./distance.js').distance
+var mqttClient  = mqtt.connect(process.env.MQTT_HOST)
+
+async function notifyBookingUpdate() {
+    mqttClient.publish('mercari', 'update')
+}
 
 var bodyParser = require('body-parser')
 
@@ -87,7 +94,6 @@ app.post('/bookings', async (req, res) => {
         .andWhere('end', '>=', body.end)
 
     if (booking.length > 0) {
-        console.log("true")
         throw new Error("Booking exists")
     }
 
@@ -97,6 +103,7 @@ app.post('/bookings', async (req, res) => {
         end: body.end,
         creation_time: new Date()
     })
+    notifyBookingUpdate()
     res.json({})
 })
 
