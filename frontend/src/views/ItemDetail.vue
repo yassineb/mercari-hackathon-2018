@@ -28,8 +28,28 @@
 							</b-icon>
 						</div>
 					</div>
-					<a class="button is-primary">Borrow</a>
+					<a @click="borrowing = true" class="button is-primary">Borrow</a>
 				</div>
+				<b-modal :active.sync="borrowing" has-modal-card>
+					<div class="modal-card" style="width: auto">
+						<header class="modal-card-head">
+							<p class="modal-card-title">Select a date</p>
+						</header>
+						<section class="modal-card-body">
+							<div
+								class="date"
+								@click="selectedDate=date"
+								:class="{selected: selectedDate===date}"
+								v-for="date in item.availableDates">
+									{{ date | dateFormat}}
+							</div>
+						</section>
+						<footer class="modal-card-foot">
+							<button class="button" type="button" @click="borrowing=false">Close</button>
+							<button class="button is-primary" @click="borrow" :disabled="!selectedDate">Borrow</button>
+						</footer>
+					</div>
+				</b-modal>
 			</div>
 		</div>
 	</div>
@@ -43,7 +63,9 @@ export default {
   name: "ItemDetail",
 	data() {
 		return {
-			item: {}
+			item: {},
+			selectedDate: null,
+			borrowing: false
 		}
 	},
   async mounted() {
@@ -53,6 +75,11 @@ export default {
 	computed: {
 		itemId() {
 			return this.$route.params.itemId
+		}
+	},
+	methods: {
+		borrow() {
+			this.borrowing = false
 		}
 	},
 	components: {
@@ -101,5 +128,17 @@ h1 {
 	display: flex;
 	margin-top: 40px;
 	justify-content: space-between;
+}
+.date {
+	padding: 10px;
+	margin: 5px;
+	background: #eeeeee;
+	cursor: pointer;
+	&:hover {
+		background: #cccccc;
+	}
+	&.selected {
+		background: #7957d5;
+	}
 }
 </style>

@@ -7,11 +7,18 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 import '@mdi/font/css/materialdesignicons.css'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import moment from 'moment'
 
 Vue.use(VueGoogleMaps, {
 	load: {
 		key: process.env.VUE_APP_GOOGLE_MAPS_KEY,
 		libraries: 'places',
+	}
+})
+
+Vue.filter('dateFormat', function(value) {
+	if (value) {
+		return moment(value).format('MM/DD/YYYY hh:mm')
 	}
 })
 
