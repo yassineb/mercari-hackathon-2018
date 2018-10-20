@@ -83,10 +83,8 @@ export default {
       // Whenever the file changes, emit the 'input' event with the file data.
       //this.$emit('input', e.target.files[0])
     //}
-      console.log('item image uploaded')
     },
     getCategories: function() {
-      console.log('get categories called')
       this.categories = [
         "Shirt",
         "T-Shirt",
