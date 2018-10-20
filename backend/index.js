@@ -16,11 +16,17 @@ app.use((req, res, next) => {
 })
 
 app.get('/items', async (req, res) => {
-  let items = await knex.select().from('items').map(function(item) {
+  let items = await knex.select('items.*', 'users.name AS owner_name')
+      .from('items')
+      .leftJoin('users', 'users.id', '=', 'items.owner_id')
+      .map(function(item) {
     return {
         'id': item.id,
         'title': item.title,
-        'image': item.image
+        'image': item.image,
+        'owner': item.owner_name,
+        'latitude': item.latitude,
+        'longitude': item.longitude
     }
   });
 
@@ -28,27 +34,40 @@ app.get('/items', async (req, res) => {
 })
 
 app.get('/items/:id', async (req, res) => {
-    let items = await knex.select().from('items').where({id: req.params.id})
+    let items = await knex.select('items.*', 'users.name AS owner_name')
+        .from('items')
+        .leftJoin('users', 'users.id', '=', 'items.owner_id')
+        .where({"items.id": req.params.id})
         .first()
         .then(function (item) {
             return {
                 'id': item.id,
                 'title': item.title,
                 'images': [item.image, item.image, item.image],
-                'owner': 'Yassine',
-                'reviews': [{'comment': 'This was a warm jacket', "rating": true}]
+                'owner': item.owner_name,
+                'reviews': [{'comment': 'This was a warm jacket', "rating": true}],
+                'latitude': item.latitude,
+                'longitude': item.longitude
             }
         })
     res.json(items)
 })
 
 app.post('/items', async (req, res) => {
-  title = req.body.title
-  images = req.body.images
-  
-  console.log(title, images)
-  await db.knex('items').insert({title, image: images[0]})
-  res.json("ok")
+    body = req.body
+    image = body.images[0]
+
+    await knex('items').insert({
+        title: body.title,
+        image: image,
+        size: body.size,
+        category: body.category,
+        color: body.color,
+        brand: body.brand,
+        description: body.description,
+        owner_id: 1
+    })
+    res.json("ok")
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))

@@ -1,0 +1,2 @@
+ALTER TABLE items ADD COLUMN owner_id BIGINT(20),
+    ADD FOREIGN KEY ITEM_TO_OWNER_FK (owner_id) REFERENCES users(id);
