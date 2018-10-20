@@ -2,7 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const app = express()
 const port = 3000
-require('./config.js')
+require('./db.js')
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*")
