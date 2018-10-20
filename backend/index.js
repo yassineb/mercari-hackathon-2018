@@ -48,6 +48,7 @@ app.get('/items/:id', async (req, res) => {
         .where({"items.id": req.params.id})
         .first()
         .then(function (item) {
+            var availableDates = ['2018-10-21', '2018-10-22', '2018-10-23', '2018-10-24', '2018-10-25']
             return {
                 'id': item.id,
                 'title': item.title,
@@ -55,7 +56,8 @@ app.get('/items/:id', async (req, res) => {
                 'owner': item.owner_name,
                 'reviews': [{'comment': 'This was a warm jacket', "rating": true}],
                 'latitude': item.latitude,
-                'longitude': item.longitude
+                'longitude': item.longitude,
+                'availableDates': availableDates
             }
         })
     res.json(items)
