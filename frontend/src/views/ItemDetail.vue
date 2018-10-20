@@ -2,7 +2,21 @@
 	<div>
 		<div class="columns">
 			<div class="column is-three-fifths centered is-offset-one-fifth">
-				<img class="item-image" :src="item.images[0]"/>
+				<div class="images-horizontal">
+					<div 
+						:style="{ backgroundImage: 'url(' + item.images[0] + ')' }"
+						class="item-image"/>
+					<div class="images-vertical">
+						<div 
+							v-if="item.images.length > 1"
+							:style="{ backgroundImage: 'url(' + item.images[1] + ')' }"
+							class="item-image"/>
+						<div 
+							v-if="item.images.length > 2"
+							:style="{ backgroundImage: 'url(' + item.images[2] + ')' }"
+							class="item-image"/>
+					</div>
+				</div>
 				<div class="item-header">
 					<h1>{{item.title}}</h1>
 					<div>{{item.owner}}</div>
@@ -33,20 +47,20 @@
 				<b-modal :active.sync="borrowing" has-modal-card>
 					<div class="modal-card" style="width: auto">
 						<header class="modal-card-head">
-							<p class="modal-card-title">Select a date</p>
+							<p class="modal-card-title">Select the dates</p>
 						</header>
 						<section class="modal-card-body">
 							<div
 								class="date"
-								@click="selectedDate=date"
-								:class="{selected: selectedDate===date}"
+								@click="selectDate(date)"
+								:class="{selected: isDateInRange(date)}"
 								v-for="date in item.availableDates">
 									{{ date | dateFormat}}
 							</div>
 						</section>
 						<footer class="modal-card-foot">
 							<button class="button" type="button" @click="borrowing=false">Close</button>
-							<button class="button is-primary" @click="borrow" :disabled="!selectedDate">Borrow</button>
+							<button class="button is-primary" @click="borrow" :disabled="!selectedDates.to">Borrow</button>
 						</footer>
 					</div>
 				</b-modal>
@@ -64,7 +78,10 @@ export default {
 	data() {
 		return {
 			item: {},
-			selectedDate: null,
+			selectedDates: {
+				from: null,
+				to: null
+			},
 			borrowing: false
 		}
 	},
@@ -78,8 +95,37 @@ export default {
 		}
 	},
 	methods: {
-		borrow() {
+		async borrow() {
 			this.borrowing = false
+			await api.post("/borrow", {
+				start: this.selectedDates.from,
+				end: this.selectedDates.to,
+				item_id: this.itemId
+			})
+			this.$router.push({name: 'Discover'})
+		},
+		selectDate(date) {
+			if (this.selectedDates.from) {
+				if (this.selectedDates.to) {
+					this.selectedDates.to = null
+					this.selectedDates.from = null
+				} else {
+					this.selectedDates.to = date
+				}
+			} else {
+				this.selectedDates.from = date
+			}
+		},
+		isDateInRange(date) {
+			if (this.selectedDates.from) {
+				if (this.selectedDates.to) {
+					return date >= this.selectedDates.from && date <= this.selectedDates.to
+				} else {
+					return date === this.selectedDates.from
+				}
+			} else {
+				return false
+			}
 		}
 	},
 	components: {
@@ -101,10 +147,6 @@ h1 {
 }
 .item-info {
 	flex-grow: 0.3;
-}
-.item-image {
-	width: 100%;
-	height: 300px;
 }
 .item-header { 
 	display: flex;
@@ -140,5 +182,20 @@ h1 {
 	&.selected {
 		background: #7957d5;
 	}
+}
+.item-image {
+	flex-grow: 1;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+.images-horizontal {
+	display: flex;
+	height: 300px;
+}
+.images-vertical {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
 }
 </style>
