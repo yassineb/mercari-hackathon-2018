@@ -1,56 +1,78 @@
 <template>
   <div class="add-item-section">
     <div class="add-item-container">
-      <div class="add-item">
+      <div class="add-item section">
         <div class="add-item_top">
           <div class="add-item_top_title">
             <span class="add-item_top_title-text">
-              Add item screen
+              Add item details
             </span>
           </div>
         </div>
 
-        <div class="add-item_form">
-          <div class="add-item_form_image">
-            <div class="add-item_form_image_selector">
-              Select or drop image for the product
-              <input type="file"
-              @change="itemImageUpload()">
-            </div>
-          </div>
-          <div class="add-item_form_title">
-            <div class="add-item_form_title_label">
+        <div class="add-item_form container">
+          <b-field clas="add-item_form_images">
+            <b-upload v-model="itemData.images"
+              multiple
+              drag-drop>
+              <section class="section">
+                <div class="content has-text-centered">
+                  <p>
+                    <b-icon
+                    icon="upload"
+                    size="is-large">
+                    </b-icon>
+                  </p>
+                  <p>Drop your files here or click to upload</p>
+                </div>
+              </section>
+            </b-upload>
+          </b-field>
+          <div class="add-item_form_title field">
+            <div class="add-item_form_title_label label">
               Item title :
             </div>
-            <input type="text" v-model="itemData.title">
+            <div class="control">
+              <input class="input" type="text" v-model="itemData.title">
+            </div>
           </div>
-          <div class="add-item_form_description">
-            <div class="add-item_form_description_label">
+          <div class="add-item_form_description field">
+            <div class="add-item_form_description_label label">
               Item description :
             </div>
-            <textarea v-model="itemData.description" placeholder="Add item description">
-            </textarea>
+            <div class="control">
+              <textarea class="textarea" v-model="itemData.description" placeholder="Add item description">
+              </textarea>
+            </div>
           </div>
           <div class="add-item_form_category">
             <div class="add-item_form_category_label">
               Select item category :
             </div>
-            <select class="add-item_form_category_selector" v-model="itemData.category">
-              <option disabled>Please select one</option>
-              <option value="" v-for="category in categories">{{category}}</option>
-            </select>
+            <div class="control">
+              <div class="select">
+                <select class="add-item_form_category_selector input" v-model="itemData.category">
+                  <option disabled>Please select one</option>
+                  <option value="" v-for="category in categories">{{category}}</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="add-item_form_brand">
-            <div class="add-item_form_brand_label">
+          <div class="add-item_form_brand field">
+            <div class="add-item_form_brand_label label">
               Select item brand :
             </div>
-            <input type="text" v-model="itemData.brand" placeholder="Brand of the item">
+            <div class="control">
+              <input class="input" type="text" v-model="itemData.brand" placeholder="Brand of the item">
+            </div>
           </div>
-        </div>
-        <div class="add-item_action">
-          <div class="add-item_action_save">
-            <button type="button" name="button">Save</button>
-            <button type="button" name="button">Reset</button>
+          <div class="add-item_action field is-grouped">
+            <div class="add-item_action_save control">
+              <button type="button" class="button is-primary" name="button">Save</button>
+            </div>
+            <div class="control">
+              <button type="button" class="button is-text" name="button">Reset</button>
+            </div>
           </div>
         </div>
       </div>
@@ -97,3 +119,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .label {
+    text-align: left;
+  }
+  .add-item_form_category .select {
+    width: 100%;
+  }
+</style>
