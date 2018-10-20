@@ -24,7 +24,9 @@ app.get('/items', async (req, res) => {
         'id': item.id,
         'title': item.title,
         'image': item.image,
-        'owner': item.owner_name
+        'owner': item.owner_name,
+        'latitude': item.latitude,
+        'longitude': item.longitude
     }
   });
 
@@ -43,7 +45,9 @@ app.get('/items/:id', async (req, res) => {
                 'title': item.title,
                 'images': [item.image, item.image, item.image],
                 'owner': item.owner_name,
-                'reviews': [{'comment': 'This was a warm jacket', "rating": true}]
+                'reviews': [{'comment': 'This was a warm jacket', "rating": true}],
+                'latitude': item.latitude,
+                'longitude': item.longitude
             }
         })
     res.json(items)
@@ -51,15 +55,18 @@ app.get('/items/:id', async (req, res) => {
 
 app.post('/items', async (req, res) => {
     body = req.body
-    title = body.title
     image = body.images[0]
-    size = body.size
-    category = body.category
-    color = body.color
-    brand = body.brand
-    description = body.description
 
-    await knex('items').insert({title, image: image, size, category, color, brand, description, owner_id: 1})
+    await knex('items').insert({
+        title: body.title,
+        image: image,
+        size: body.size,
+        category: body.category,
+        color: body.color,
+        brand: body.brand,
+        description: body.description,
+        owner_id: 1
+    })
     res.json("ok")
 })
 
