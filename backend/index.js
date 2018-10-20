@@ -50,12 +50,18 @@ app.get('/items/:id', async (req, res) => {
 })
 
 app.post('/items', async (req, res) => {
-  title = req.body.title
-  images = req.body.images
+    body = req.body
+    title = body.title
+    image = body.images[0]
+    size = body.size
+    category = body.category
+    color = body.color
+    brand = body.brand
+    description = body.description
 
-  console.log(title, images)
-  await db.knex('items').insert({title, image: images[0]})
-  res.json("ok")
+    await db.knex('items').insert({title, image: image, size, category, color, brand, description
+    })
+    res.json("ok")
 })
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
