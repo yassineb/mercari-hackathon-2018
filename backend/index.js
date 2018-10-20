@@ -42,8 +42,12 @@ app.get('/items/:id', async (req, res) => {
     res.json(items)
 })
 
-app.post('/items', function (req, res){
-  console.log(req.body);
+app.post('/items', async (req, res) => {
+  title = req.body.title
+  images = req.body.images
+  
+  console.log(title, images)
+  await db.knex('items').insert({title, image: images[0]})
   res.json("ok")
 })
 
