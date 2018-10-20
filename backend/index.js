@@ -19,22 +19,26 @@ app.use((req, res, next) => {
 
 
 app.get('/items', async (req, res) => {
-  let items = await knex.select('items.*', 'users.name AS owner_name')
-      .from('items')
-      .leftJoin('users', 'users.id', '=', 'items.owner_id')
-      .map(function(item) {
-    return {
-        'id': item.id,
-        'title': item.title,
-        'image': item.image,
-        'owner': item.owner_name,
-        'latitude': item.latitude,
-        'longitude': item.longitude,
-        'distance': distance(userLocation, item)
-    }
-  });
+    let items = await knex.select('items.*', 'users.name AS owner_name')
+        .from('items')
+        .leftJoin('users', 'users.id', '=', 'items.owner_id')
+        .map(function(item) {
+        return {
+            'id': item.id,
+            'title': item.title,
+            'image': item.image,
+            'owner': item.owner_name,
+            'latitude': item.latitude,
+            'longitude': item.longitude,
+            'distance': distance(userLocation, item)
+        }
+    });
 
-  res.json(items)
+    items.sort(function(first, second) {
+        return first.distance > second.distance
+    })
+
+    res.json(items)
 })
 
 app.get('/items/:id', async (req, res) => {
