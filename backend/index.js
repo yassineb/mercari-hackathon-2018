@@ -3,6 +3,8 @@ const app = express()
 const port = 3000
 const db = require('./db.js')
 const knex = db.knex
+const distance = require('./distance.js').distance
+const userLocation = {latitude: 52.2322584, longitude: 20.9842694}
 
 var bodyParser = require('body-parser')
 
@@ -15,6 +17,7 @@ app.use((req, res, next) => {
   next()
 })
 
+
 app.get('/items', async (req, res) => {
   let items = await knex.select('items.*', 'users.name AS owner_name')
       .from('items')
@@ -26,7 +29,8 @@ app.get('/items', async (req, res) => {
         'image': item.image,
         'owner': item.owner_name,
         'latitude': item.latitude,
-        'longitude': item.longitude
+        'longitude': item.longitude,
+        'distance': distance(userLocation, item)
     }
   });
 
