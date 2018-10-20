@@ -1,8 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const db = require('./db.js')
-const knex = db.knex
+const db = require('./db.js').knex
 const distance = require('./distance.js').distance
 
 var bodyParser = require('body-parser')
@@ -19,9 +18,11 @@ app.use((req, res, next) => {
 
 app.get('/items', async (req, res) => {
     var userLocation = {latitude: req.query.latitude, longitude: req.query.longitude}
-    let items = await knex.select('items.*', 'users.name AS owner_name')
+    let items = await db.select('items.*', 'users.name AS owner_name')
         .from('items')
         .leftJoin('users', 'users.id', '=', 'items.owner_id')
+        .leftJoin('bookings', 'bookings.item_id', '=', 'items.id')
+        .whereRaw('bookings.id is null')
         .map(function(item) {
         return {
             'id': item.id,
@@ -42,12 +43,13 @@ app.get('/items', async (req, res) => {
 })
 
 app.get('/items/:id', async (req, res) => {
-    let items = await knex.select('items.*', 'users.name AS owner_name')
+    let items = await db.select('items.*', 'users.name AS owner_name')
         .from('items')
         .leftJoin('users', 'users.id', '=', 'items.owner_id')
         .where({"items.id": req.params.id})
         .first()
         .then(function (item) {
+            var availableDates = ['2018-10-21', '2018-10-22', '2018-10-23', '2018-10-24', '2018-10-25']
             return {
                 'id': item.id,
                 'title': item.title,
@@ -55,7 +57,8 @@ app.get('/items/:id', async (req, res) => {
                 'owner': item.owner_name,
                 'reviews': [{'comment': 'This was a warm jacket', "rating": true}],
                 'latitude': item.latitude,
-                'longitude': item.longitude
+                'longitude': item.longitude,
+                'availableDates': availableDates
             }
         })
     res.json(items)
@@ -65,7 +68,7 @@ app.post('/items', async (req, res) => {
     body = req.body
     image = body.images[0]
 
-    await knex('items').insert({
+    await db('items').insert({
         title: body.title,
         image: image,
         size: body.size,

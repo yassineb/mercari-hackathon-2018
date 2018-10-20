@@ -72,7 +72,7 @@ export default {
 				.map(item => ({
 					...item,
 					location: {lat: item.latitude, lng: item.longitude},
-					distance: Math.round(item.distance*100)/100
+					distance: Math.round(item.distance*100)/100 + " km"
 					})
 				)
 		},

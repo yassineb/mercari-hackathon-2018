@@ -1,0 +1,8 @@
+CREATE TABLE bookings(
+    `id` BIGINT(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_id` BIGINT(20) NOT NULL,
+    `start` DATETIME NOT NULL,
+    `end` DATETIME NOT NULL,
+    `creation_time` DATETIME NOT NULL,
+    FOREIGN KEY BOOKING_TO_ITEM_FK (`item_id`) REFERENCES items(`id`)
+);
