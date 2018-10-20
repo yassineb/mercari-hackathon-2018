@@ -29,6 +29,12 @@
               </section>
             </b-upload>
           </b-field>
+          <div class="uploaded-images">
+            <div class="image tpopup" v-for="(image, index) in itemData.images">
+              <img v-bind:src="image">
+              <div id="tclose" @click="removeImage(index)">X</div>
+            </div>
+          </div>
           <div class="add-item_form_title field">
             <div class="add-item_form_title_label label">
               Item title :
@@ -72,7 +78,7 @@
             </div>
             <div class="control">
               <gmap-autocomplete
-                class="input search-filter"
+                class="input pickup-location"
                 @place_changed="updateLocation">
               </gmap-autocomplete>
             </div>
@@ -169,7 +175,7 @@ export default {
     },
     imageUploaded: function () {
       for(var i = 0; i < this.images.length; i++) {
-        this.uploadImageCloudinary(this.images[0])
+        this.uploadImageCloudinary(this.images[i])
       }
     },
     updateLocation(location) {
@@ -191,7 +197,11 @@ export default {
         }
       }).then((response) => {
         this.itemData.images.push(response.data.url)
+        this.images=[]
       })
+    },
+    removeImage: function (index) {
+      this.itemData.images.splice(index, 1)
     }
   }
 };
@@ -201,7 +211,65 @@ export default {
   .label {
     text-align: left;
   }
-  .add-item_form_category .select {
-    width: 100%;
+  .add-item_form {
+    &_category .select {
+      width: 100%;
+    }
+    &_title {
+      margin-top: 15px;
+    }
   }
+  .uploaded-images {
+    display: table;
+    .image {
+      display: table-cell;
+      vertical-align: bottom;
+      padding-right: 20px;
+      img {
+        height: 100px;
+        width: auto;
+        border-radius: 5px;
+      }
+    }
+  }
+
+  #thover{
+  position:fixed;
+  background:#000;
+  width:100%;
+  height:100%;
+  opacity: .6
+}
+
+#tpopup{
+  position:absolute;
+  width:600px;
+  height:180px;
+  background:#fff;
+  left:50%;
+  top:50%;
+  border-radius:5px;
+  padding:60px 0;
+  margin-left:-320px; /* width/2 + padding-left */
+  margin-top:-150px; /* height/2 + padding-top */
+  text-align:center;
+  box-shadow:0 0 10px 0 #000;
+}
+#tclose{
+  position:absolute;
+  background: black;
+  color: white;
+  right: 15px;
+  top: -3px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 19px;
+  text-align: center;
+  font-size: 8px;
+  font-weight: bold;
+  font-family:'Arial Black', Arial, sans-serif;
+  cursor:pointer;
+  box-shadow:0 0 10px 0 #000;
+}
 </style>
