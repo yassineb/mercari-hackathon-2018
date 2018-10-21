@@ -59,7 +59,7 @@ app.get('/items/:id', async (req, res) => {
             return {
                 'id': item.id,
                 'title': item.title,
-                'images': [item.image, item.image, item.image],
+                'images': [item.image],
                 'owner': item.owner_name,
                 'reviews': [{'comment': 'This was a warm jacket', "rating": true}],
                 'latitude': item.latitude,
