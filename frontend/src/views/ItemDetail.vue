@@ -6,7 +6,7 @@
 					<div 
 						:style="{ backgroundImage: 'url(' + item.images[0] + ')' }"
 						class="item-image"/>
-					<div class="images-vertical">
+					<div class="images-vertical" v-if="item.images.length > 1">
 						<div 
 							v-if="item.images.length > 1"
 							:style="{ backgroundImage: 'url(' + item.images[1] + ')' }"
@@ -187,7 +187,7 @@ h1 {
 	flex-grow: 1;
 	background-repeat: no-repeat;
 	background-position: center;
-	background-size: cover;
+	background-size: contain;
 }
 .images-horizontal {
 	display: flex;
