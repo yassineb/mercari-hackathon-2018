@@ -52,7 +52,7 @@
               </textarea>
             </div>
           </div>
-          <div class="add-item_form_category field">
+          <div class="add-item_form_category">
             <div class="add-item_form_brand_label label">
               Item Category :
             </div>
@@ -106,6 +106,7 @@
 
 <script>
 import axios from "axios";
+import api from "@/api";
 import cloudinary from "cloudinary-core";
 
 export default {
@@ -121,8 +122,7 @@ export default {
         color: null
       },
       images: [],
-      categories: [],
-      coordinates: null
+      categories: []
     }
   },
   mounted() {
@@ -149,11 +149,11 @@ export default {
       console.log('add item function called')
       this.itemData['userId'] = 1;
       if (this.coordinates !== null) {
-        this.itemData['latitude'] = this.coordinates.latitude
-        this.itemData['longitude'] = this.coordinates.longitude
+        this.itemData['lat'] = this.coordinates.latitude
+        this.itemData['long'] = this.coordinates.longitude
       }
       console.log(this.itemData)
-      axios.post("http://172.16.230.84:3000/items", this.itemData)
+      api.post("/items", this.itemData)
         .then((response) => {
           console.log("success")
           this.reset()
@@ -168,8 +168,7 @@ export default {
         brand: null,
         color: null
       }
-      this.images = []
-      this.coordinates = []
+      this.images = [];
     },
     imageUploaded: function () {
       for(var i = 0; i < this.images.length; i++) {
