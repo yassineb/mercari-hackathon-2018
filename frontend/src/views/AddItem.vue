@@ -53,15 +53,11 @@
             </div>
           </div>
           <div class="add-item_form_category field">
-            <div class="add-item_form_category_label label">
-              Select item category :
+            <div class="add-item_form_brand_label label">
+              Item Category :
             </div>
             <div class="control">
-              <div class="select">
-                <select class="add-item_form_category_selector input" v-model="itemData.category">
-                  <option value="" v-for="category in categories">{{category}}</option>
-                </select>
-              </div>
+              <input class="input" type="text" v-model="itemData.category" placeholder="Category of the item">
             </div>
           </div>
           <div class="add-item_form_brand field">
@@ -199,9 +195,16 @@ export default {
         }
       }).then((response) => {
         this.itemData.images.push(response.data.url)
+				this.predict(response.data.url)
         this.images=[]
       })
     },
+		async predict(image) {
+      let prediction = await axios.post(process.env.VUE_APP_ML_URL+"/predict", {image})
+			this.itemData.color = prediction.data.color[0].split(' ')[0]
+			this.itemData.category = prediction.data.category[0]
+			this.itemData.brand = prediction.data.brand[0]
+		},
     removeImage: function (index) {
       this.itemData.images.splice(index, 1)
     }

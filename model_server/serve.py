@@ -1,10 +1,13 @@
-import predict
-import numpy as np
+from predictor import Predictor
 import urllib.request
+from flask_cors import CORS
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
-graph, model  = predict.get_resNet50_graph_model()
+CORS(app)
+# graph, model  = predict.get_resNet50_graph_model()
+
+predictor = Predictor()
 
 @app.route("/")
 def hello():
@@ -14,21 +17,20 @@ def hello():
 
     return "Hello World!"
 
-@app.route("/predict_things", methods=['GET', 'POST'])
-def predict_things():
-    
-    image = request.get_json()['image']
-    filename = image.split("/")[-1]
-    print(filename)
-    
-    urllib.request.urlretrieve(image, filename)
-    prediction = predict.make_inference(graph, model, filename)
+@app.route("/predict", methods=['POST'])
+def predict_category():
+    filename = download_file_and_get_filename()
+    prediction = predictor.predict(filename)
+    return jsonify(prediction)
 
-    top_choice = prediction[0][0][1]
-    top_probability = float(prediction[0][0][2])
-    print(top_choice, top_probability)
-    return jsonify(top_choice, top_probability)
+
+def download_file_and_get_filename():
+    image = request.get_json()['image']
+    filename = "tmp/"+image.split("/")[-1]
+    print(filename)    
+    urllib.request.urlretrieve(image, filename)
+    return filename
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host = '0.0.0.0')
 

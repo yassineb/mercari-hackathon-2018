@@ -8,6 +8,7 @@ import 'buefy/dist/buefy.css'
 import '@mdi/font/css/materialdesignicons.css'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import moment from 'moment'
+import './sync'
 
 Vue.use(VueGoogleMaps, {
 	load: {
