@@ -1,8 +1,10 @@
 from predictor import Predictor
 import urllib.request
+from flask_cors import CORS
 
 from flask import Flask, request, jsonify
 app = Flask(__name__)
+CORS(app)
 # graph, model  = predict.get_resNet50_graph_model()
 
 predictor = Predictor()
