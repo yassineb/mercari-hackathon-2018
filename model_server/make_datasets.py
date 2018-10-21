@@ -8,17 +8,13 @@ def make_dataset(subject, classes):
         paths = response.download(arguments)   #passing the arguments to the function
         print(paths)
 
-def clean_files(dir_name):
-    for root, subdirs, files in os.walk(dir_name):
-        for f in files:
-            r = f.replace(" ","")
-            if( r != f):
-                os.rename(root+"/"+f,root+"/"+r)
-                print (f)
 
-datasets = dict(category=["T-shift", "pants", "hats", "bag"])
+datasets = dict(
+        # category=["T-shift", "pants", "hats", "bag"],
+        color=["red clothes", "blue clothes", "green clothes", "white clothes", "black clothes"],
+        brand=["adidas", "nike"]
+        )
 
 for subject in datasets:
     make_dataset(subject, datasets[subject])
-    clean_files("./datasets/"+subject)
 
