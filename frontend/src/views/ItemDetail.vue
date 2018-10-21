@@ -97,7 +97,7 @@ export default {
 	methods: {
 		async borrow() {
 			this.borrowing = false
-			await api.post("/borrow", {
+			await api.post("/bookings", {
 				start: this.selectedDates.from,
 				end: this.selectedDates.to,
 				item_id: this.itemId

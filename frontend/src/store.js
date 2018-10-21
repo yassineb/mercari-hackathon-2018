@@ -11,7 +11,7 @@ const state = {
 const actions = {
   async refreshItems({commit}, location) {
 		let loc = location || state.currentLocation
-    let response = await api.get('/items', {params: location})
+    let response = await api.get('/items', {params: loc})
     commit('currentLocation', loc)
     commit('refreshItems', response.data)
   }
