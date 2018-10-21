@@ -83,8 +83,8 @@ app.post('/items', async (req, res) => {
         brand: body.brand,
         description: body.description,
         owner_id: 1,
-        latitude: body.latitude,
-        longitude: body.longitude
+        latitude: body.lat,
+        longitude: body.long
     })
     res.json("ok")
 })
